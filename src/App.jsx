@@ -52,7 +52,7 @@ function App() {
     <div className="game-container">
       <div className="header">
         <div className="title-container">
-          <h1>Culpe os verdadeiros culpados</h1>
+          <h1>Julgamento dos verdadeiros culpados</h1>
           <button 
             className="sound-toggle"
             onClick={() => setSoundEnabled(!soundEnabled)}
