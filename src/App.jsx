@@ -1,21 +1,48 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import abelImage from './assets/images/burrabel-burreira.jfif'
 import leilaImage from './assets/images/leila-burreira.png'
+import { initAudio, playRandomPunch } from './utils/soundEffects'
 
 function App() {
   const [abelHits, setAbelHits] = useState(0)
   const [leilaHits, setLeilaHits] = useState(0)
   const [abelAnimating, setAbelAnimating] = useState(false)
   const [leilaAnimating, setLeilaAnimating] = useState(false)
+  const [audioInitialized, setAudioInitialized] = useState(false)
+  const [soundEnabled, setSoundEnabled] = useState(true)
+
+  // Initialize audio on first user interaction
+  const handleFirstInteraction = () => {
+    if (!audioInitialized) {
+      initAudio();
+      setAudioInitialized(true);
+    }
+  };
 
   const handleAbelClick = () => {
+    handleFirstInteraction();
+    
+    // Play punch sound with intensity based on hit count
+    if (soundEnabled) {
+      const intensity = Math.min(1 + (abelHits * 0.05), 1.8);
+      playRandomPunch(intensity);
+    }
+    
     setAbelHits(prev => prev + 1)
     setAbelAnimating(true)
     setTimeout(() => setAbelAnimating(false), 350)
   }
 
   const handleLeilaClick = () => {
+    handleFirstInteraction();
+    
+    // Play punch sound with intensity based on hit count
+    if (soundEnabled) {
+      const intensity = Math.min(1 + (leilaHits * 0.05), 1.8);
+      playRandomPunch(intensity);
+    }
+    
     setLeilaHits(prev => prev + 1)
     setLeilaAnimating(true)
     setTimeout(() => setLeilaAnimating(false), 350)
@@ -24,7 +51,16 @@ function App() {
   return (
     <div className="game-container">
       <div className="header">
-        <h1>Culpe os verdadeiros culpados</h1>
+        <div className="title-container">
+          <h1>Culpe os verdadeiros culpados</h1>
+          <button 
+            className="sound-toggle"
+            onClick={() => setSoundEnabled(!soundEnabled)}
+            title={soundEnabled ? 'Desligar som' : 'Ligar som'}
+          >
+            {soundEnabled ? '🔊' : '🔇'}
+          </button>
+        </div>
         <div className="counters-container">
           <div className="counter">
             <span className="counter-text">Você já socou Abel por {abelHits} vezes</span>
